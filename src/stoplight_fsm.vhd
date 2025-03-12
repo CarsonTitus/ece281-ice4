@@ -79,9 +79,13 @@ architecture stoplight_fsm_arch of stoplight_fsm is
 begin
 	-- CONCURRENT STATEMENTS ----------------------------
 	-- Next state logic
-	
-	
+	f_Q_next(0) <= NOT f_Q(1) AND i_C;
+	f_Q_next(1) <= NOT f_Q(1) AND f_Q(0) AND i_C;
 	-- Output logic
+	o_G <= (NOT f_Q(1)) AND f_Q(0);
+	o_Y <= f_Q(1) AND (not f_Q(0));
+	o_R <= (NOT f_Q(1) AND NOT f_Q(0)) OR (f_Q(1) AND f_Q(0));
+
 	
 	-------------------------------------------------------	
 	
@@ -89,7 +93,7 @@ begin
 	-- state memory w/ asynchronous reset ---------------
 	register_proc : process (i_clk, i_reset)
 	begin
-            if i_reset = '1' then
+        if i_reset = '1' then
             f_Q <= "10";        -- reset state is yellow
         elsif (rising_edge(i_clk)) then
             f_Q <= f_Q_next;    -- next state becomes current state
